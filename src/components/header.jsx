@@ -1,23 +1,37 @@
 "use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeaderLinkButton, LinkButton } from "./button";
+import DropDown from "./dropdown";
 import logo from "@/assets/images/white-logo.webp";
-import Image from "next/image";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isWhatWeBuyDropDownOpen, setIsWhatWeBuyDropDownOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const menuList = [
     { href: "/", label: "Home" },
-    { href: "/what-we-buy", label: "What We Buy" },
+    {
+      label: "What We Buy",
+      dropDown: [
+        { href: "/what-we-buy/gold-silver-platinum", title: "Gold, Silver and Platinum" },
+        { href: "/what-we-buy/coins", title: "Coins" },
+        { href: "/what-we-buy/diamond-and-jewelry", title: "Diamond and Jewelry" },
+        { href: "/what-we-buy/electronics-and-tools", title: "Electronics and Tools" },
+        { href: "/what-we-buy/antiques", title: "Antiques" },
+        { href: "/what-we-buy/watches", title: "Watches" },
+        {href: "/what-we-buy/bullion",title: "Bullion",},  
+      ],
+    },
     { href: "/about", label: "About" },
     { href: "/pawn-process", label: "Pawn Process" },
   ];
@@ -35,25 +49,26 @@ const Header = () => {
       }
     };
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const contactBtn = useCallback((params) => {
-    const className = params?.className;
-    return (
-      <LinkButton
-        href="/contact"
-        className={`lg:flex !py-0 !px-0 w-36 lg:!h-[2.2rem] 4xl:!h-[3rem] before:bg-white animated-btn relative border border-white hover:border-primary  !bg-primary text-approxblack font-semibold text-[15px] rounded-lg overflow-hidden group ${className}`}
-        onClick={params.onClick}
-      >
-        <span className="relative z-10 transition-colors duration-400 group-hover:text-approxblack md:px-16 md:py-4 px-8 py-3 ">
-          Contact
-        </span>
-      </LinkButton>
-    );
-  }, []);
+  const contactBtn = useCallback(
+    (params) => {
+      const className = params?.className;
+      return (
+        <LinkButton
+          href="/contact"
+          className={`lg:flex !py-0 !px-0 w-36 lg:!h-[2.2rem] 4xl:!h-[3rem] before:bg-white animated-btn relative border border-white hover:border-primary !bg-primary text-approxblack font-semibold text-[15px] rounded-lg overflow-hidden group ${className}`}
+          onClick={params?.onClick}
+        >
+          <span className="relative z-10 transition-colors duration-400 group-hover:text-approxblack md:px-16 md:py-4 px-8 py-3">
+            Contact
+          </span>
+        </LinkButton>
+      );
+    },
+    []
+  );
 
   return (
     <header
@@ -64,7 +79,7 @@ const Header = () => {
       }`}
     >
       <div className="!px-5 container">
-        <div className="mx-auto flex gap-2 xxs:gap-3 xs:gap-4 items-center justify-between 2xl:px-14  2xl:py-4">
+        <div className="mx-auto flex gap-2 xxs:gap-3 xs:gap-4 items-center justify-between 2xl:px-14 2xl:py-4">
           <Link href="/">
             <Image
               src={logo}
@@ -73,22 +88,35 @@ const Header = () => {
               className="object-contain w-20 h-20 lg:w-24 lg:h-24 2xl:h-auto"
             />
           </Link>
+
           {/* Desktop Navigation */}
           <nav className="hidden lg:block">
             <ul className="gap-0 2xl:gap-0 font-sans flex items-center">
-              {menuList.map((item) => (
-                <HeaderLinkButton
-                  key={item?.label}
-                  href={item?.href}
-                  className={"rounded-none"}
-                >
-                  {item?.label}
-                </HeaderLinkButton>
-              ))}
+              {menuList.map((item) =>
+                item.dropDown ? (
+                  <DropDown
+                    key={item.label}
+                    title={item.label}
+                    menuList={item.dropDown}
+                    isDropDownOpen={isWhatWeBuyDropDownOpen}
+                    setIsDropDownOpen={setIsWhatWeBuyDropDownOpen}
+                  />
+                ) : (
+                  <HeaderLinkButton
+                    key={item?.label}
+                    href={item?.href}
+                    className="rounded-none"
+                  >
+                    {item?.label}
+                  </HeaderLinkButton>
+                )
+              )}
             </ul>
           </nav>
 
+
           {contactBtn({ className: "hidden" })}
+
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-1.5 xxs:p-2 hover:bg-white/10 rounded-full text-white transition-colors"
@@ -103,6 +131,7 @@ const Header = () => {
           </button>
         </div>
 
+        {/* Mobile Nav */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -110,16 +139,17 @@ const Header = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden "
+              className="lg:hidden"
             >
-              <nav className="text-center font-sans h-screen px-2 xxs:px-3 xs:px-4  py-2 flex flex-col gap-3">
+              <nav className="text-center font-sans h-screen px-2 xxs:px-3 xs:px-4 py-2 flex flex-col gap-3">
                 {menuList.map((item) =>
                   item.dropDown ? (
                     <DropDown
                       key={item.label}
                       title={item.label}
                       menuList={item.dropDown}
-                      onToggle={() => setIsMenuOpen(false)}
+                      isDropDownOpen={isWhatWeBuyDropDownOpen}
+                      setIsDropDownOpen={setIsWhatWeBuyDropDownOpen}
                     />
                   ) : (
                     <HeaderLinkButton
