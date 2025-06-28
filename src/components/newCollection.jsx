@@ -18,8 +18,8 @@ export default function NewInCollectionSection() {
           style={{ backgroundImage: `url(${leftImg.src})` }}
         >
           <div className="absolute inset-0 bg-black opacity-40 z-0 rounded-lg sm:rounded-xl"></div>
-          <div className="relative bg-opacity-60 p-20 z-10">
-            <p className="text-2xl font-semibold tracking-wide mb-4">
+       <div className="relative bg-opacity-60 p-20 sm:px-1 flex flex-col items-center sm:items-center md:items-center text-center sm:text-center md:text- inset-0 justify-center px-4 ">
+  <p className="text-2xl font-semibold tracking-wide mb-4 whitespace-nowrap">
               Precision Tool Collection
             </p>
             <p className="text-xl font-semibold mb-4 ">
