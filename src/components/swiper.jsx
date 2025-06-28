@@ -25,6 +25,7 @@ export default function SwiperSection({ slides = [] }) {
           modifier: 1,
           slideShadows: true,
         }}
+        loop={true}
         autoplay={{
           delay: 1000,
           disableOnInteraction: false,
