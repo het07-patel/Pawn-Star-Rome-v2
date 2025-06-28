@@ -7,6 +7,7 @@ import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeaderLinkButton, LinkButton } from "./button";
+import { usePathname } from "next/navigation";
 import DropDown from "./dropdown";
 import logo from "@/assets/images/white-logo.webp";
 
@@ -17,6 +18,13 @@ const Header = () => {
   const [isWhatWeBuyDropDownOpen, setIsWhatWeBuyDropDownOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsWhatWeBuyDropDownOpen(false);
+  }, [pathname]);
 
   const menuList = [
     { href: "/", label: "Home" },

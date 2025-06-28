@@ -78,7 +78,7 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
         {isDropDownOpen && (
           <div
             ref={mobileMenuRef}
-            className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-[200px] rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] lg:hidden z-[60]"
+            className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-[210px] rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] lg:hidden z-[60]"
             onClick={(e) => e.stopPropagation()}
           >
             <ul className="flex flex-col w-full gap-[2px]">
@@ -88,18 +88,16 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
                     <button
                       type="button"
                       className={`block w-full text-left leading-5 text-[15px] text-black transition-all font-normal bg-lightslate p-[9px] ${activeItem?.href === x.href
-                          ? "!text-white rounded-lg bg-black"
-                          : "hover:bg-black hover:text-white hover:rounded-lg"
+                        ? "!text-white rounded-lg bg-black"
+                        : "hover:bg-black hover:text-white hover:rounded-lg"
                         }`}
                       onMouseDown={(e) => {
-                        // Use mouseDown to ensure navigation is queued before dropdown closes
                         e.stopPropagation();
-                        setIsDropDownOpen(false);
+                        setIsDropDownOpen(false); 
                         dispatch(setIsMenuOpen(false));
-                        setTimeout(() => {
-                          router.push(x.href);
-                        }, 30); // small delay ensures it happens *after* DOM closes dropdown
+                        router.push(x.href); 
                       }}
+
                     >
                       {x.title}
                     </button>
@@ -112,18 +110,16 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
         )}
       </div>
 
-      {/* === Desktop Dropdown with portal === */}
       {isDropDownOpen && typeof window !== "undefined" &&
         createPortal(
           <>
-            {/* Overlay to close on outside click */}
+
             <div
               onClick={() => setIsDropDownOpen(false)}
               className="fixed inset-0 z-[9998] hidden lg:block"
               aria-hidden="true"
             />
 
-            {/* Relative wrapper at correct position */}
             <div
               style={{
                 position: "absolute",
