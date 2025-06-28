@@ -9,7 +9,7 @@ const HeadingTitle = ({ headingClassName, sectionName, description }) => {
         </h2>
         {description && (
           <div className="flex justify-center text-center pt-4 xl:pt-8">
-            <p className="text-basewhite text-sm w-full 2xl:w-[60%] md:text-lg xl:text-[22px] xl:w-[85%]">
+            <p className="sm:px-4 text-basewhite text-sm w-full 2xl:w-[60%] md:text-lg xl:text-[22px] xl:w-[85%]">
               {description}
             </p>
           </div>

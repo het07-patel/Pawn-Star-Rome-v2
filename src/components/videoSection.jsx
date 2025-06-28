@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import thumbnail from "@/assets/images/about-us/thumbnail.webp";
 import antiquePottery from "@/assets/images/about-us/antique-pottery.webp";

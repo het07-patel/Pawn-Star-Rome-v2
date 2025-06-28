@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { removeTrailingSlash } from "@/helper/helperFunctions";
 import { setIsMenuOpen } from "@/store/slices/commonSlice";
@@ -16,6 +16,8 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
   const mobileMenuRef = useRef();
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const router = useRouter();
+
 
   const activeItem = useMemo(() => {
     if (!pathname) return null;
@@ -33,7 +35,7 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
 
   useClickOutside([desktopMenuRef, mobileMenuRef], () => {
     setIsDropDownOpen(false);
-  }, [triggerRef]); 
+  }, [triggerRef]);
 
   const getDropdownPosition = () => {
     if (!triggerRef.current) return { top: 0, left: 0, width: 0 };
@@ -53,16 +55,15 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
 
   return (
     <>
+      {/* === Trigger Button === */}
       <div
         ref={triggerRef}
         className="relative inline-block text-center w-full lg:w-auto"
       >
-        
         <button
           onClick={handleDropDownToggle}
-          className={`rounded-none w-full lg:w-auto transition-all duration-300 lg:!h-[2.1rem] 2xl:!h-12 4xl:!h-[3.2rem] lg:!px-6 2xl:!px-9 4xl:!px-10 !font-normal text-sm 2xl:text-lg flex items-center justify-center gap-1.5 ${
-            isDropdownActive ? "text-gray" : "hover:text-primary"
-          }`}
+          className={`rounded-none w-full lg:w-auto transition-all duration-300 lg:!h-[2.1rem] 2xl:!h-12 4xl:!h-[3.2rem] lg:!px-6 2xl:!px-9 4xl:!px-10 !font-normal text-sm 2xl:text-lg flex items-center justify-center gap-1.5 ${isDropdownActive ? "text-gray" : "hover:text-primary"
+            }`}
           aria-expanded={isDropDownOpen}
           aria-haspopup="true"
           type="button"
@@ -73,86 +74,101 @@ const DropDown = ({ title, menuList, isDropDownOpen, setIsDropDownOpen }) => {
           </span>
         </button>
 
+        {/* === Mobile Dropdown === */}
         {isDropDownOpen && (
-           <div
+          <div
             ref={mobileMenuRef}
-            className="absolute left-1/2 transform -translate-x-1/2 w-[200px] mt-2 rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] lg:hidden z-[60]"
-            onClick={(e) => e.stopPropagation()} 
+            className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-[200px] rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] lg:hidden z-[60]"
+            onClick={(e) => e.stopPropagation()}
           >
             <ul className="flex flex-col w-full gap-[2px]">
               {menuList.map((x, i) => (
                 <li key={i} className="w-full">
                   {x.href && (
-                    <Link
-                      href={x.href}
-                      className={`block w-full leading-5 text-[15px] text-black transition-all font-normal bg-lightslate p-[9px] ${
-                        activeItem?.href === x.href
+                    <button
+                      type="button"
+                      className={`block w-full text-left leading-5 text-[15px] text-black transition-all font-normal bg-lightslate p-[9px] ${activeItem?.href === x.href
                           ? "!text-white rounded-lg bg-black"
                           : "hover:bg-black hover:text-white hover:rounded-lg"
-                      }`}
-                      onClick={(e) => {
+                        }`}
+                      onMouseDown={(e) => {
+                        // Use mouseDown to ensure navigation is queued before dropdown closes
                         e.stopPropagation();
                         setIsDropDownOpen(false);
                         dispatch(setIsMenuOpen(false));
+                        setTimeout(() => {
+                          router.push(x.href);
+                        }, 30); // small delay ensures it happens *after* DOM closes dropdown
                       }}
                     >
                       {x.title}
-                    </Link>
+                    </button>
                   )}
                 </li>
               ))}
             </ul>
+
           </div>
         )}
       </div>
 
-      {isDropDownOpen &&
-        typeof window !== "undefined" &&
+      {/* === Desktop Dropdown with portal === */}
+      {isDropDownOpen && typeof window !== "undefined" &&
         createPortal(
           <>
+            {/* Overlay to close on outside click */}
             <div
               onClick={() => setIsDropDownOpen(false)}
-              className="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden lg:block"
+              className="fixed inset-0 z-[9998] hidden lg:block"
               aria-hidden="true"
             />
-            
+
+            {/* Relative wrapper at correct position */}
             <div
-              ref={desktopMenuRef}
-              className="fixed z-[9999] rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] hidden lg:block"
               style={{
+                position: "absolute",
                 top: `${position.top}px`,
                 left: `${position.left}px`,
-                minWidth: `${Math.max(position.width, 220)}px`,
+                width: `${position.width}px`,
+                zIndex: 9999,
               }}
-              onClick={(e) => e.stopPropagation()} 
             >
-              <ul className="flex flex-col w-full gap-[2px]">
-                {menuList.map((x, i) => (
-                  <li key={i} className="w-full">
-                    {x.href && (
-                      <Link
-                        href={x.href}
-                        className={`block w-full leading-5 text-[15px] 2xl:text-lg text-black transition-all font-normal bg-lightslate p-[9px] 2xl:p-[10px] ${
-                          activeItem?.href === x.href
+              <div
+                ref={desktopMenuRef}
+                className="rounded-lg bg-white p-2 shadow-[rgba(99,99,99,0.2)_0_1px_6px_0] hidden lg:block"
+                style={{
+                  minWidth: "255px",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ul className="flex flex-col w-full gap-[2px]">
+                  {menuList.map((x, i) => (
+                    <li key={i} className="w-full">
+                      {x.href && (
+                        <Link
+                          href={x.href}
+                          className={`block w-full leading-5 text-[15px] 2xl:text-lg text-black transition-all font-normal bg-lightslate p-[9px] 2xl:p-[10px] ${activeItem?.href === x.href
                             ? "!text-white rounded-lg bg-black"
                             : "hover:bg-black hover:text-white hover:rounded-lg"
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsDropDownOpen(false);
-                          dispatch(setIsMenuOpen(false));
-                        }}
-                      >
-                        {x.title}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                            }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsDropDownOpen(false);
+                            dispatch(setIsMenuOpen(false));
+                          }}
+                        >
+                          {x.title}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </>,
           document.body
         )}
+
     </>
   );
 };
