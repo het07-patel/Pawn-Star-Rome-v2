@@ -1,6 +1,5 @@
 "use client";
 import Hero from "@/components/hero";
-import React from "react";
 import Substract from "@/assets/images/home-page/Subtract.webp";
 import { LinkButton } from "@/components/button";
 import Image from "next/image";

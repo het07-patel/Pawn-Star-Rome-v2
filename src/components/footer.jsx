@@ -1,7 +1,5 @@
 "use client";
-import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import twitter from "@/assets/images/icons/twitter.svg";
 import instagram from "@/assets/images/icons/instagram.svg";
 import youtube from "@/assets/images/icons/youtube.svg";

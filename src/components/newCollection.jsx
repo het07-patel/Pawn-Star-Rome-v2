@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import CustomImage from "@/components/customImage";
 import leftImg from "@/assets/images/what-we-buy/electronic-and-tool/Img8.webp";
 import rightImg from "@/assets/images/what-we-buy/electronic-and-tool/Img7.webp";
@@ -16,13 +15,13 @@ export default function NewInCollectionSection() {
       <div className="max-w-6xl mx-auto relative flex flex-col md:flex-row items-center justify-center">
         <div
           className="relative p-8 md:w-1/2 z-10 rounded-lg sm:rounded-xl shadow-lg bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${leftImg.src})` }} 
+          style={{ backgroundImage: `url(${leftImg.src})` }}
         >
           <div className="absolute inset-0 bg-black opacity-40 z-0 rounded-lg sm:rounded-xl"></div>
           <div className="relative bg-opacity-60 p-20 z-10">
             <p className="text-2xl font-semibold tracking-wide mb-4">
- Precision Tool Collection            
- </p>
+              Precision Tool Collection
+            </p>
             <p className="text-xl font-semibold mb-4 ">
               "Crafted for performance, built to last"
             </p>

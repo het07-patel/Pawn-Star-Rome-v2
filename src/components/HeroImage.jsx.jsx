@@ -1,6 +1,4 @@
-import React from "react";
 import CustomImage from "./customImage";
-
 
 const HeroSection = ({
   title = "Pawn Star Rome",
@@ -34,7 +32,9 @@ const HeroSection = ({
       {/* Overlay text on left side */}
       <div className="absolute inset-0 flex items-center px-10 md:px-16 z-10">
         <div className="max-w-xl text-white">
-          <h2 className="text-3xl md:text-5xl font-bold font-gelasio leading-tight drop-shadow-lg">{heading}</h2>
+          <h2 className="text-3xl md:text-5xl font-bold font-gelasio leading-tight drop-shadow-lg">
+            {heading}
+          </h2>
           <p className="mt-4 text-base md:text-lg text-basewhite drop-shadow">
             {subtext}
           </p>
