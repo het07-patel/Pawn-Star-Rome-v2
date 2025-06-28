@@ -19,7 +19,7 @@ export const metadata = {
     title: META_TITLE,
     description: META_DESCRIPTION,
     url: CANONICAL_URL,
-    siteName: "Pawn Star Rome | Contact",
+    siteName: "Pawn Star Rome | What We Buy",
     images: [
       {
         url: OPEN_GRAPH_IMAGE,
